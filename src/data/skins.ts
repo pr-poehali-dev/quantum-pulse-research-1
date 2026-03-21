@@ -10,23 +10,28 @@ export interface Skin {
   category: 'knife' | 'rifle' | 'pistol' | 'smg' | 'shotgun' | 'sniper';
 }
 
-const KNIFE_IMG = 'https://cdn.poehali.dev/projects/7aeef975-065a-4673-b1ab-8a723cdbab1f/files/6e9d8a1e-6f8f-4b49-b785-18e887bbae59.jpg';
+const BUTTERFLY_IMG = 'https://cdn.poehali.dev/projects/7aeef975-065a-4673-b1ab-8a723cdbab1f/files/02b2e520-a75c-45d7-8b9d-b11374ebb043.jpg';
+const KARAMBIT_IMG = 'https://cdn.poehali.dev/projects/7aeef975-065a-4673-b1ab-8a723cdbab1f/files/4e4a388e-0ad5-4a24-88fb-92b85294b918.jpg';
+const BAYONET_IMG = 'https://cdn.poehali.dev/projects/7aeef975-065a-4673-b1ab-8a723cdbab1f/files/a83f7672-2a7e-4b29-af9b-df8b16ea967b.jpg';
+const PUSH_IMG = 'https://cdn.poehali.dev/projects/7aeef975-065a-4673-b1ab-8a723cdbab1f/files/5af2794f-e734-4c5e-bd69-bb8cc5a4b9de.jpg';
+const FOLDING_IMG = 'https://cdn.poehali.dev/projects/7aeef975-065a-4673-b1ab-8a723cdbab1f/files/5d71162e-27f8-4aff-a434-00ae38106487.jpg';
 const AK47_IMG = 'https://cdn.poehali.dev/projects/7aeef975-065a-4673-b1ab-8a723cdbab1f/files/a25814e4-5cb4-496e-b212-24c364b4600b.jpg';
 const M4A1_IMG = 'https://cdn.poehali.dev/projects/7aeef975-065a-4673-b1ab-8a723cdbab1f/files/fd554b9d-be66-48a2-82d7-5a0bbb40e624.jpg';
 const DEAGLE_IMG = 'https://cdn.poehali.dev/projects/7aeef975-065a-4673-b1ab-8a723cdbab1f/files/cedefaf4-4761-4f25-9d39-70b2d1ff47be.jpg';
 const AWP_IMG = 'https://cdn.poehali.dev/projects/7aeef975-065a-4673-b1ab-8a723cdbab1f/files/ce98c629-c7b7-4695-9f43-442995f52ca3.jpg';
-const KARAMBIT_IMG = 'https://cdn.poehali.dev/projects/7aeef975-065a-4673-b1ab-8a723cdbab1f/files/a363b83d-022e-40f0-a665-d5e713242812.jpg';
 const SHOTGUN_IMG = 'https://cdn.poehali.dev/projects/7aeef975-065a-4673-b1ab-8a723cdbab1f/files/24cf5225-5e89-47a7-88b0-68dbb42931d6.jpg';
 const MP5_IMG = 'https://cdn.poehali.dev/projects/7aeef975-065a-4673-b1ab-8a723cdbab1f/files/79c92568-7afc-4b94-9e6d-0c268eb956f3.jpg';
 
 export const skins: Skin[] = [
-  // KNIVES - GODLIKE
-  { id: 'k1', name: 'Dragon Glass', weapon: 'Нож-бабочка', rarity: 'godlike', price: 12500, image: KNIFE_IMG, category: 'knife' },
+  // KNIVES
+  { id: 'k1', name: 'Dragon Glass', weapon: 'Нож-бабочка', rarity: 'godlike', price: 12500, image: BUTTERFLY_IMG, category: 'knife' },
   { id: 'k2', name: 'Изумрудный тигр', weapon: 'Карамбит', rarity: 'godlike', price: 9800, image: KARAMBIT_IMG, category: 'knife' },
-  { id: 'k3', name: 'Кровавый рубин', weapon: 'Нож-бабочка', rarity: 'legendary', price: 7200, image: KNIFE_IMG, category: 'knife' },
+  { id: 'k3', name: 'Кровавый рубин', weapon: 'Штык-нож', rarity: 'legendary', price: 7200, image: BAYONET_IMG, category: 'knife' },
   { id: 'k4', name: 'Ночной охотник', weapon: 'Карамбит', rarity: 'legendary', price: 6500, image: KARAMBIT_IMG, category: 'knife' },
-  { id: 'k5', name: 'Золотой клык', weapon: 'Нож-бабочка', rarity: 'epic', price: 4200, image: KNIFE_IMG, category: 'knife' },
-  { id: 'k6', name: 'Стальная тень', weapon: 'Карамбит', rarity: 'rare', price: 1800, image: KARAMBIT_IMG, category: 'knife' },
+  { id: 'k5', name: 'Золотой дракон', weapon: 'Тычковый нож', rarity: 'epic', price: 4200, image: PUSH_IMG, category: 'knife' },
+  { id: 'k6', name: 'Галактика', weapon: 'Складной нож', rarity: 'epic', price: 3600, image: FOLDING_IMG, category: 'knife' },
+  { id: 'k7', name: 'Стальная тень', weapon: 'Нож-бабочка', rarity: 'rare', price: 1800, image: BUTTERFLY_IMG, category: 'knife' },
+  { id: 'k8', name: 'Лесной камуфляж', weapon: 'Штык-нож', rarity: 'uncommon', price: 650, image: BAYONET_IMG, category: 'knife' },
 
   // AK-47
   { id: 'ak1', name: 'Dragon | Чёрный огонь', weapon: 'AK-47', rarity: 'godlike', price: 8900, image: AK47_IMG, category: 'rifle' },
@@ -97,11 +102,11 @@ export const cases = [
     id: 'case2',
     name: 'Кейс Ножей',
     price: 299,
-    image: KNIFE_IMG,
+    image: BUTTERFLY_IMG,
     color: 'from-blue-900 to-cyan-900',
     glow: 'shadow-cyan-500/50',
-    skins: ['k1', 'k2', 'k3', 'k4', 'k5', 'k6'],
-    weights: [2, 3, 10, 15, 25, 45],
+    skins: ['k1', 'k2', 'k3', 'k4', 'k5', 'k6', 'k7', 'k8'],
+    weights: [2, 2, 5, 8, 12, 12, 20, 39],
   },
   {
     id: 'case3',
