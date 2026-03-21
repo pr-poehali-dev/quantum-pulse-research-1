@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url("https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;700;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Oswald:wght@400;500;600;700&display=swap");
 
 @layer utilities {
   .text-balance {
@@ -12,26 +12,26 @@
 
 @layer base {
   :root {
-    --background: 220 20% 6%;
+    --background: 252 22% 8%;
     --foreground: 0 0% 95%;
-    --card: 220 20% 9%;
+    --card: 252 22% 11%;
     --card-foreground: 0 0% 95%;
-    --popover: 220 20% 9%;
+    --popover: 252 22% 11%;
     --popover-foreground: 0 0% 95%;
-    --primary: 195 100% 50%;
-    --primary-foreground: 220 20% 6%;
-    --secondary: 220 20% 14%;
+    --primary: 43 96% 56%;
+    --primary-foreground: 252 22% 8%;
+    --secondary: 252 22% 16%;
     --secondary-foreground: 0 0% 95%;
-    --muted: 220 20% 14%;
-    --muted-foreground: 0 0% 55%;
-    --accent: 25 100% 55%;
-    --accent-foreground: 0 0% 5%;
+    --muted: 252 22% 16%;
+    --muted-foreground: 0 0% 50%;
+    --accent: 271 76% 60%;
+    --accent-foreground: 0 0% 98%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
-    --border: 220 20% 18%;
-    --input: 220 20% 14%;
-    --ring: 195 100% 50%;
-    --radius: 0.75rem;
+    --border: 252 22% 20%;
+    --input: 252 22% 16%;
+    --ring: 43 96% 56%;
+    --radius: 0.625rem;
   }
 }
 
@@ -42,7 +42,7 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: "Rajdhani", sans-serif;
+    font-family: "Inter", sans-serif;
   }
 
   html {
@@ -56,19 +56,31 @@
     transform: translateY(0px);
   }
   50% {
-    transform: translateY(-10px);
+    transform: translateY(-8px);
   }
 }
 
 @keyframes glow-pulse {
   0%,
   100% {
-    box-shadow: 0 0 10px rgba(0, 195, 255, 0.3);
+    box-shadow: 0 0 10px rgba(234, 179, 8, 0.3);
   }
   50% {
     box-shadow:
-      0 0 30px rgba(0, 195, 255, 0.8),
-      0 0 60px rgba(0, 195, 255, 0.4);
+      0 0 30px rgba(234, 179, 8, 0.7),
+      0 0 60px rgba(234, 179, 8, 0.3);
+  }
+}
+
+@keyframes purple-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 10px rgba(147, 51, 234, 0.3);
+  }
+  50% {
+    box-shadow:
+      0 0 30px rgba(147, 51, 234, 0.8),
+      0 0 60px rgba(147, 51, 234, 0.4);
   }
 }
 
@@ -104,62 +116,100 @@
   }
 }
 
+@keyframes shimmer {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
 .float-anim {
   animation: float 3s ease-in-out infinite;
 }
-.glow-blue {
+.glow-yellow {
   animation: glow-pulse 2s ease-in-out infinite;
+}
+.glow-purple {
+  animation: purple-pulse 2s ease-in-out infinite;
 }
 .glow-fire {
   animation: fire-pulse 2s ease-in-out infinite;
 }
 
+/* Rarity system */
 .rarity-common {
-  border-color: #b0b0b0;
-  box-shadow: 0 0 8px rgba(176, 176, 176, 0.3);
+  border-color: #9e9e9e;
+  box-shadow: 0 0 6px rgba(158, 158, 158, 0.2);
 }
 .rarity-uncommon {
-  border-color: #4caf50;
-  box-shadow: 0 0 8px rgba(76, 175, 80, 0.4);
+  border-color: #66bb6a;
+  box-shadow: 0 0 8px rgba(102, 187, 106, 0.3);
 }
 .rarity-rare {
-  border-color: #2196f3;
-  box-shadow: 0 0 12px rgba(33, 150, 243, 0.5);
+  border-color: #42a5f5;
+  box-shadow: 0 0 12px rgba(66, 165, 245, 0.4);
 }
 .rarity-epic {
-  border-color: #9c27b0;
-  box-shadow: 0 0 15px rgba(156, 39, 176, 0.6);
+  border-color: #ab47bc;
+  box-shadow: 0 0 15px rgba(171, 71, 188, 0.5);
 }
 .rarity-legendary {
-  border-color: #ff9800;
-  box-shadow: 0 0 20px rgba(255, 152, 0, 0.7);
+  border-color: #ffa726;
+  box-shadow: 0 0 20px rgba(255, 167, 38, 0.6);
 }
 .rarity-godlike {
-  border-color: #f44336;
+  border-color: #ef5350;
   box-shadow:
-    0 0 25px rgba(244, 67, 54, 0.8),
-    0 0 50px rgba(244, 67, 54, 0.4);
+    0 0 25px rgba(239, 83, 80, 0.7),
+    0 0 50px rgba(239, 83, 80, 0.3);
 }
 
 .skin-card:hover {
   transform: translateY(-4px) scale(1.02);
-  transition: all 0.3s ease;
+  transition: all 0.25s ease;
 }
 
 .crash-multiplier {
-  font-family: "Orbitron", monospace;
+  font-family: "Oswald", monospace;
 }
 
+/* Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 5px;
 }
 ::-webkit-scrollbar-track {
-  background: #0a0e1a;
+  background: hsl(252, 22%, 8%);
 }
 ::-webkit-scrollbar-thumb {
-  background: #00c3ff44;
+  background: rgba(234, 179, 8, 0.3);
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #00c3ff88;
+  background: rgba(234, 179, 8, 0.6);
+}
+
+/* Case card shimmer */
+.case-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.05),
+    transparent
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2.5s infinite;
+}
+
+/* Nav active indicator */
+.nav-active::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 20%;
+  right: 20%;
+  height: 2px;
+  background: hsl(43, 96%, 56%);
+  border-radius: 2px 2px 0 0;
 }
