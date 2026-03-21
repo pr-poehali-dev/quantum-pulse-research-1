@@ -5,6 +5,7 @@ import SkinCard from '@/components/SkinCard';
 import CaseOpenModal from '@/components/CaseOpenModal';
 import CrashGame from '@/components/CrashGame';
 import DepositModal from '@/components/DepositModal';
+import WithdrawModal from '@/components/WithdrawModal';
 import Icon from '@/components/ui/icon';
 import { toast } from '@/hooks/use-toast';
 
@@ -22,6 +23,7 @@ export default function Index() {
   const [search, setSearch] = useState('');
   const [openCase, setOpenCase] = useState<string | null>(null);
   const [showDeposit, setShowDeposit] = useState(false);
+  const [showWithdraw, setShowWithdraw] = useState(false);
 
   const filteredSkins = skins.filter((s) => {
     if (category !== 'all' && s.category !== category) return false;
@@ -88,6 +90,13 @@ export default function Index() {
             >
               <Icon name="Plus" size={16} />
               <span className="hidden sm:inline">Пополнить</span>
+            </button>
+            <button
+              onClick={() => setShowWithdraw(true)}
+              className="bg-blue-600 hover:bg-blue-500 text-white font-bold px-3 py-1.5 rounded-xl text-sm flex items-center gap-1.5 transition-all"
+            >
+              <Icon name="ArrowUpFromLine" size={16} />
+              <span className="hidden sm:inline">Вывести</span>
             </button>
           </div>
         </div>
@@ -324,6 +333,7 @@ export default function Index() {
       {/* Modals */}
       {openCase && <CaseOpenModal caseId={openCase} onClose={() => setOpenCase(null)} />}
       {showDeposit && <DepositModal onClose={() => setShowDeposit(false)} />}
+      {showWithdraw && <WithdrawModal onClose={() => setShowWithdraw(false)} />}
     </div>
   );
 }
