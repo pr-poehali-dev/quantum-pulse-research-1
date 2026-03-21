@@ -12,6 +12,8 @@ interface Store {
   addBalance: (amount: number) => void;
   deductBalance: (amount: number) => boolean;
   addToInventory: (skin: Skin) => void;
+  sellFromInventory: (index: number) => number;
+  sellAll: () => number;
 }
 
 export const useStore = create<Store>((set, get) => ({
@@ -25,4 +27,19 @@ export const useStore = create<Store>((set, get) => ({
   },
   addToInventory: (skin) =>
     set((s) => ({ inventory: [{ skin, obtainedAt: new Date() }, ...s.inventory] })),
+  sellFromInventory: (index) => {
+    const item = get().inventory[index];
+    if (!item) return 0;
+    const sellPrice = Math.floor(item.skin.price * 0.7);
+    set((s) => ({
+      balance: s.balance + sellPrice,
+      inventory: s.inventory.filter((_, i) => i !== index),
+    }));
+    return sellPrice;
+  },
+  sellAll: () => {
+    const total = get().inventory.reduce((sum, item) => sum + Math.floor(item.skin.price * 0.7), 0);
+    set((s) => ({ balance: s.balance + total, inventory: [] }));
+    return total;
+  },
 }));

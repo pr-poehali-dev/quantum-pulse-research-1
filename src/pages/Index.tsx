@@ -15,7 +15,7 @@ type RarityFilter = 'all' | 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary
 const AK47_IMG = 'https://cdn.poehali.dev/projects/7aeef975-065a-4673-b1ab-8a723cdbab1f/files/a25814e4-5cb4-496e-b212-24c364b4600b.jpg';
 
 export default function Index() {
-  const { balance, inventory } = useStore();
+  const { balance, inventory, sellFromInventory, sellAll } = useStore();
   const [tab, setTab] = useState<Tab>('cases');
   const [category, setCategory] = useState<Category>('all');
   const [rarity, setRarity] = useState<RarityFilter>('all');
@@ -250,9 +250,28 @@ export default function Index() {
         {/* INVENTORY TAB */}
         {tab === 'inventory' && (
           <div>
-            <div className="mb-6 flex items-center justify-between">
-              <h1 className="text-3xl font-black" style={{ fontFamily: 'Orbitron' }}>Инвентарь</h1>
-              <span className="text-muted-foreground text-sm">{inventory.length} предметов</span>
+            <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <h1 className="text-3xl font-black" style={{ fontFamily: 'Orbitron' }}>Инвентарь</h1>
+                <p className="text-muted-foreground text-sm mt-1">
+                  {inventory.length} предметов · Стоимость:{' '}
+                  <span className="text-green-400 font-bold">
+                    {inventory.reduce((s, i) => s + Math.floor(i.skin.price * 0.7), 0).toLocaleString()} ₽
+                  </span>
+                </p>
+              </div>
+              {inventory.length > 0 && (
+                <button
+                  onClick={() => {
+                    const total = sellAll();
+                    toast({ title: `Продано всё за ${total.toLocaleString()} ₽`, description: 'Средства зачислены на баланс' });
+                  }}
+                  className="flex items-center gap-2 bg-red-600/20 hover:bg-red-600/40 border border-red-500/40 text-red-400 font-bold px-4 py-2 rounded-xl transition-all"
+                >
+                  <Icon name="Trash2" size={16} />
+                  Продать всё
+                </button>
+              )}
             </div>
 
             {inventory.length === 0 ? (
@@ -268,9 +287,34 @@ export default function Index() {
               </div>
             ) : (
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-                {inventory.map((item, i) => (
-                  <SkinCard key={i} skin={item.skin} showBuy={false} />
-                ))}
+                {inventory.map((item, i) => {
+                  const sellPrice = Math.floor(item.skin.price * 0.7);
+                  const colors = rarityColors[item.skin.rarity];
+                  return (
+                    <div key={i} className={`skin-card bg-card border-2 rarity-${item.skin.rarity} rounded-xl overflow-hidden group transition-all duration-300`}>
+                      <div className={`relative h-36 ${colors.bg} flex items-center justify-center p-2`}>
+                        <img src={item.skin.image} alt={item.skin.name} className="h-full w-full object-cover rounded-lg opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300" />
+                        <span className={`absolute top-2 right-2 text-xs font-bold px-2 py-0.5 rounded-full ${colors.bg} ${colors.text} border ${colors.border}`}>
+                          {colors.label}
+                        </span>
+                      </div>
+                      <div className="p-2.5">
+                        <div className="text-xs text-muted-foreground font-medium uppercase tracking-wider">{item.skin.weapon}</div>
+                        <div className="font-bold text-sm mt-0.5 leading-tight">{item.skin.name}</div>
+                        <button
+                          onClick={() => {
+                            const price = sellFromInventory(i);
+                            toast({ title: `Продано за ${price.toLocaleString()} ₽`, description: `${item.skin.weapon} | ${item.skin.name}` });
+                          }}
+                          className="mt-2 w-full flex items-center justify-center gap-1.5 bg-green-600/20 hover:bg-green-600/40 border border-green-500/40 text-green-400 font-bold text-xs py-1.5 rounded-lg transition-all"
+                        >
+                          <Icon name="DollarSign" size={13} />
+                          Продать · {sellPrice.toLocaleString()} ₽
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             )}
           </div>
