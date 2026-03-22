@@ -9,9 +9,18 @@ import WithdrawModal from '@/components/WithdrawModal';
 import Icon from '@/components/ui/icon';
 import { toast } from '@/hooks/use-toast';
 
-type Tab = 'catalog' | 'cases' | 'crash' | 'inventory';
+type Tab = 'cases' | 'catalog' | 'crash' | 'inventory';
 type Category = 'all' | 'knife' | 'rifle' | 'pistol' | 'smg' | 'shotgun' | 'sniper';
 type RarityFilter = 'all' | 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary' | 'godlike';
+
+const rarityBarBg: Record<string, string> = {
+  common: '#9e9e9e',
+  uncommon: '#5ac25a',
+  rare: '#5b8af0',
+  epic: '#9b59f7',
+  legendary: '#fc8a37',
+  godlike: '#ff3f5b',
+};
 
 export default function Index() {
   const { balance, inventory, sellFromInventory, sellAll } = useStore();
@@ -22,12 +31,12 @@ export default function Index() {
   const [openCase, setOpenCase] = useState<string | null>(null);
   const [showDeposit, setShowDeposit] = useState(false);
   const [showWithdraw, setShowWithdraw] = useState(false);
-  const [onlineCount, setOnlineCount] = useState(2847);
+  const [onlineCount, setOnlineCount] = useState(14238);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setOnlineCount((prev) => prev + Math.floor(Math.random() * 7) - 3);
-    }, 4000);
+      setOnlineCount((prev) => prev + Math.floor(Math.random() * 11) - 5);
+    }, 3500);
     return () => clearInterval(interval);
   }, []);
 
@@ -41,52 +50,57 @@ export default function Index() {
   const navItems: { id: Tab; label: string; icon: string }[] = [
     { id: 'cases', label: 'Кейсы', icon: 'Package2' },
     { id: 'catalog', label: 'Маркет', icon: 'ShoppingBag' },
-    { id: 'crash', label: 'Crash', icon: 'TrendingUp' },
+    { id: 'crash', label: 'Краш', icon: 'TrendingUp' },
     { id: 'inventory', label: 'Инвентарь', icon: 'Archive' },
   ];
 
   const categories: { id: Category; label: string }[] = [
     { id: 'all', label: 'Все' },
-    { id: 'knife', label: '🔪 Ножи' },
-    { id: 'rifle', label: '🔫 Штурм' },
-    { id: 'pistol', label: '🔫 Пистолеты' },
+    { id: 'knife', label: 'Ножи' },
+    { id: 'rifle', label: 'Штурмовые' },
+    { id: 'pistol', label: 'Пистолеты' },
     { id: 'smg', label: 'ПП' },
     { id: 'shotgun', label: 'Дробовики' },
     { id: 'sniper', label: 'Снайперки' },
   ];
 
+  const rarityLabels: Record<string, string> = {
+    all: 'Все', common: 'Базовые', uncommon: 'Обычные', rare: 'Редкие',
+    epic: 'Эпические', legendary: 'Легендарные', godlike: 'Боговы',
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* Header */}
-      <header className="sticky top-0 z-40 bg-card/95 backdrop-blur-md border-b border-border/60">
-        <div className="max-w-7xl mx-auto px-4 h-[60px] flex items-center justify-between gap-4">
+
+      {/* ─── HEADER ─── */}
+      <header className="sticky top-0 z-40" style={{ background: '#1c1d1f', borderBottom: '1px solid #2a2c2f' }}>
+        <div className="max-w-7xl mx-auto px-4 h-[58px] flex items-center justify-between gap-3">
 
           {/* Logo */}
-          <div className="flex items-center gap-2 shrink-0">
-            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-              <Icon name="Flame" size={18} className="text-primary-foreground" />
+          <div className="flex items-center gap-2.5 shrink-0">
+            <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #fc8a37 0%, #e8620e 100%)' }}>
+              <Icon name="Flame" size={17} className="text-white" />
             </div>
-            <span className="text-lg font-black tracking-tight" style={{ fontFamily: 'Oswald, sans-serif' }}>
-              DRAGON<span className="text-primary">DROP</span>
+            <span className="text-[17px] font-extrabold tracking-tight text-white">
+              DRAGON<span style={{ color: '#fc8a37' }}>DROP</span>
             </span>
           </div>
 
           {/* Desktop nav */}
-          <nav className="hidden md:flex items-center gap-1 flex-1 justify-center">
+          <nav className="hidden md:flex items-center gap-0.5 flex-1 justify-center">
             {navItems.map((n) => (
               <button
                 key={n.id}
                 onClick={() => setTab(n.id)}
-                className={`relative flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 ${
-                  tab === n.id
-                    ? 'text-primary bg-primary/10'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
-                }`}
+                className="relative flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-150"
+                style={tab === n.id ? { color: '#fc8a37', background: 'rgba(252,138,55,0.12)' } : { color: '#7a7d82' }}
+                onMouseEnter={(e) => { if (tab !== n.id) (e.currentTarget as HTMLElement).style.color = '#e8eaed'; }}
+                onMouseLeave={(e) => { if (tab !== n.id) (e.currentTarget as HTMLElement).style.color = '#7a7d82'; }}
               >
                 <Icon name={n.icon} size={15} />
                 {n.label}
                 {n.id === 'inventory' && inventory.length > 0 && (
-                  <span className="bg-primary text-primary-foreground text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
+                  <span className="text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center text-white" style={{ background: '#fc8a37' }}>
                     {inventory.length}
                   </span>
                 )}
@@ -94,24 +108,27 @@ export default function Index() {
             ))}
           </nav>
 
-          {/* Right block */}
+          {/* Right side */}
           <div className="flex items-center gap-2 shrink-0">
             {/* Online */}
-            <div className="hidden sm:flex items-center gap-1.5 text-xs text-muted-foreground">
+            <div className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium" style={{ background: '#252729', color: '#7a7d82' }}>
               <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
               {onlineCount.toLocaleString()}
             </div>
 
             {/* Balance */}
-            <div className="flex items-center gap-1.5 bg-secondary border border-border rounded-lg px-3 py-1.5">
-              <Icon name="Coins" size={14} className="text-primary" />
-              <span className="font-bold text-sm tabular-nums">{balance.toLocaleString()} ₽</span>
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-bold" style={{ background: '#252729', color: '#e8eaed' }}>
+              <Icon name="Coins" size={14} style={{ color: '#fc8a37' }} />
+              {balance.toLocaleString()} ₽
             </div>
 
             {/* Deposit */}
             <button
               onClick={() => setShowDeposit(true)}
-              className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold px-3 py-1.5 rounded-lg text-sm flex items-center gap-1.5 transition-all duration-200"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-bold text-white transition-all"
+              style={{ background: 'linear-gradient(135deg, #fc8a37 0%, #e8620e 100%)' }}
+              onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.opacity = '0.9'; }}
+              onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.opacity = '1'; }}
             >
               <Icon name="Plus" size={15} />
               <span className="hidden sm:inline">Пополнить</span>
@@ -120,7 +137,10 @@ export default function Index() {
             {/* Withdraw */}
             <button
               onClick={() => setShowWithdraw(true)}
-              className="bg-secondary hover:bg-border text-foreground font-bold px-3 py-1.5 rounded-lg text-sm flex items-center gap-1.5 transition-all duration-200 border border-border"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-semibold transition-all"
+              style={{ background: '#33353b', color: '#e5e8eb' }}
+              onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = '#4b4e57'; }}
+              onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = '#33353b'; }}
             >
               <Icon name="ArrowUpFromLine" size={15} />
               <span className="hidden sm:inline">Вывести</span>
@@ -129,41 +149,48 @@ export default function Index() {
         </div>
 
         {/* Mobile nav */}
-        <div className="md:hidden flex border-t border-border/60">
+        <div className="md:hidden flex" style={{ borderTop: '1px solid #2a2c2f' }}>
           {navItems.map((n) => (
             <button
               key={n.id}
               onClick={() => setTab(n.id)}
-              className={`flex-1 flex flex-col items-center py-2 gap-0.5 text-[11px] font-semibold transition-all ${
-                tab === n.id ? 'text-primary' : 'text-muted-foreground'
-              }`}
+              className="flex-1 flex flex-col items-center py-2 gap-0.5 text-[11px] font-semibold transition-all relative"
+              style={tab === n.id ? { color: '#fc8a37' } : { color: '#7a7d82' }}
             >
               <Icon name={n.icon} size={17} />
               {n.label}
+              {tab === n.id && (
+                <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-6 h-0.5 rounded-t-full" style={{ background: '#fc8a37' }} />
+              )}
             </button>
           ))}
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 py-6">
+      <main className="max-w-7xl mx-auto px-4 py-5">
 
         {/* ─── CASES TAB ─── */}
         {tab === 'cases' && (
-          <div>
-            {/* Hero */}
-            <div className="mb-8 relative overflow-hidden rounded-2xl bg-gradient-to-r from-violet-950 via-purple-950 to-background border border-purple-900/40 p-8">
-              <div className="absolute inset-0 opacity-20"
-                style={{ backgroundImage: 'radial-gradient(circle at 70% 50%, hsl(271,76%,60%) 0%, transparent 60%)' }} />
-              <div className="relative z-10 max-w-lg">
-                <div className="inline-flex items-center gap-2 bg-primary/20 border border-primary/30 rounded-full px-3 py-1 text-xs font-semibold text-primary mb-4">
-                  <Icon name="Flame" size={12} />
-                  Открывай кейсы · Получай скины
+          <div className="slide-up">
+
+            {/* Hero banner */}
+            <div className="relative rounded-2xl overflow-hidden mb-6" style={{ background: 'linear-gradient(135deg, #1e1a16 0%, #231c10 50%, #1a1a1a 100%)', minHeight: 160 }}>
+              <div className="absolute inset-0 opacity-30" style={{ backgroundImage: 'radial-gradient(ellipse at 80% 50%, rgba(252,138,55,0.4) 0%, transparent 65%)' }} />
+              <div className="absolute top-0 left-0 right-0 h-0.5" style={{ background: 'linear-gradient(90deg, transparent, #fc8a37, transparent)' }} />
+              <div className="relative z-10 px-8 py-7 flex items-center justify-between">
+                <div>
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold mb-3" style={{ background: 'rgba(252,138,55,0.15)', border: '1px solid rgba(252,138,55,0.3)', color: '#fc8a37' }}>
+                    <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+                    {onlineCount.toLocaleString()} онлайн
+                  </div>
+                  <h1 className="text-3xl md:text-4xl font-extrabold text-white mb-1 leading-tight">
+                    Открывай кейсы
+                  </h1>
+                  <p className="text-sm" style={{ color: '#7a7d82' }}>Редкие скины ждут тебя внутри — попробуй удачу!</p>
                 </div>
-                <h1 className="text-3xl md:text-4xl font-black mb-2 leading-tight" style={{ fontFamily: 'Oswald, sans-serif' }}>
-                  КЕЙСЫ<br />
-                  <span className="text-primary">STANDOFF 2</span>
-                </h1>
-                <p className="text-muted-foreground text-sm">Редкие скины ждут тебя внутри</p>
+                <div className="hidden md:flex items-center justify-center w-24 h-24 rounded-2xl" style={{ background: 'rgba(252,138,55,0.1)', border: '1px solid rgba(252,138,55,0.2)' }}>
+                  <span className="text-5xl">📦</span>
+                </div>
               </div>
             </div>
 
@@ -173,53 +200,62 @@ export default function Index() {
                 <div
                   key={c.id}
                   onClick={() => setOpenCase(c.id)}
-                  className="group relative rounded-xl overflow-hidden border border-border hover:border-primary/50 cursor-pointer transition-all duration-300 hover:shadow-[0_0_30px_rgba(234,179,8,0.15)] hover:-translate-y-1 bg-card"
+                  className="group relative rounded-2xl overflow-hidden cursor-pointer transition-all duration-250 hover:-translate-y-1"
+                  style={{ background: '#1c1d1f', border: '1px solid #2a2c2f' }}
+                  onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(252,138,55,0.4)'; (e.currentTarget as HTMLElement).style.boxShadow = '0 8px 40px rgba(252,138,55,0.12)'; }}
+                  onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = '#2a2c2f'; (e.currentTarget as HTMLElement).style.boxShadow = 'none'; }}
                 >
                   {/* Image */}
-                  <div className={`relative h-48 bg-gradient-to-br ${c.color} overflow-hidden`}>
+                  <div className={`relative h-48 bg-gradient-to-br ${c.color} overflow-hidden flex items-center justify-center`}>
                     <div className="absolute inset-0 case-shimmer opacity-0 group-hover:opacity-100 transition-opacity" />
                     <img
                       src={c.image}
                       alt={c.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 float-anim"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                     {/* Price badge */}
-                    <div className="absolute top-3 right-3 bg-black/60 backdrop-blur-sm border border-primary/40 rounded-lg px-2.5 py-1">
-                      <span className="text-primary font-black text-sm">{c.price} ₽</span>
-                    </div>
-                    {/* Items count */}
-                    <div className="absolute top-3 left-3 bg-black/60 backdrop-blur-sm rounded-lg px-2 py-1 text-xs text-white/70">
-                      {c.skins.length} предметов
+                    <div className="absolute top-3 right-3 px-2.5 py-1 rounded-lg text-sm font-extrabold text-white" style={{ background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(6px)' }}>
+                      {c.price} ₽
                     </div>
                   </div>
 
                   {/* Info */}
                   <div className="p-4">
-                    <h3 className="font-bold text-base mb-2" style={{ fontFamily: 'Oswald, sans-serif' }}>{c.name}</h3>
-                    <div className="flex flex-wrap gap-1 mb-3">
+                    <h3 className="font-bold text-base text-white mb-1">{c.name}</h3>
+                    <p className="text-xs mb-3" style={{ color: '#7a7d82' }}>{c.skins.length} предметов</p>
+
+                    {/* Skins preview */}
+                    <div className="flex flex-wrap gap-1.5 mb-3">
                       {c.skins.slice(0, 3).map((sid) => {
                         const sk = skins.find((s) => s.id === sid)!;
+                        const barColor = rarityBarBg[sk.rarity] || '#9e9e9e';
                         return (
-                          <span key={sid} className={`text-[10px] px-2 py-0.5 rounded-full ${rarityColors[sk.rarity].bg} ${rarityColors[sk.rarity].text}`}>
+                          <span key={sid} className="text-[10px] px-2 py-0.5 rounded-md font-medium" style={{ background: 'rgba(255,255,255,0.05)', color: barColor, border: `1px solid ${barColor}40` }}>
                             {sk.name}
                           </span>
                         );
                       })}
-                      {c.skins.length > 3 && <span className="text-[10px] text-muted-foreground">+{c.skins.length - 3}</span>}
+                      {c.skins.length > 3 && <span className="text-[10px]" style={{ color: '#7a7d82' }}>+{c.skins.length - 3}</span>}
                     </div>
-                    <button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold py-2.5 rounded-lg text-sm transition-all duration-200">
-                      Открыть кейс
+
+                    <button
+                      className="w-full py-2.5 rounded-xl text-sm font-bold text-white transition-all"
+                      style={{ background: 'linear-gradient(135deg, #fc8a37 0%, #e8620e 100%)' }}
+                      onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.opacity = '0.88'; }}
+                      onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.opacity = '1'; }}
+                    >
+                      Открыть за {c.price} ₽
                     </button>
                   </div>
                 </div>
               ))}
             </div>
 
-            {/* Top skins */}
-            <div className="mt-10">
+            {/* Top skins row */}
+            <div className="mt-8">
               <div className="flex items-center gap-2 mb-4">
-                <Icon name="Flame" size={18} className="text-primary" />
-                <h2 className="text-lg font-black" style={{ fontFamily: 'Oswald, sans-serif' }}>Топ скины</h2>
+                <Icon name="Flame" size={18} style={{ color: '#fc8a37' }} />
+                <h2 className="text-lg font-bold text-white">Топовые скины</h2>
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 {skins.filter((s) => s.rarity === 'godlike' || s.rarity === 'legendary').slice(0, 4).map((s) => (
@@ -232,17 +268,23 @@ export default function Index() {
 
         {/* ─── CATALOG TAB ─── */}
         {tab === 'catalog' && (
-          <div>
-            {/* Header row */}
+          <div className="slide-up">
+            {/* Header */}
             <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between mb-5">
-              <h1 className="text-2xl font-black" style={{ fontFamily: 'Oswald, sans-serif' }}>Маркет скинов</h1>
+              <div>
+                <h1 className="text-2xl font-extrabold text-white">Маркет скинов</h1>
+                <p className="text-xs mt-0.5" style={{ color: '#7a7d82' }}>{filteredSkins.length} предметов</p>
+              </div>
               <div className="relative">
-                <Icon name="Search" size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                <Icon name="Search" size={15} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: '#7a7d82' }} />
                 <input
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Поиск..."
-                  className="bg-secondary border border-border rounded-lg pl-9 pr-4 py-2 text-sm focus:outline-none focus:border-primary w-52"
+                  placeholder="Поиск скина..."
+                  className="pl-9 pr-4 py-2 text-sm rounded-xl focus:outline-none w-52"
+                  style={{ background: '#252729', border: '1px solid #2a2c2f', color: '#e8eaed' }}
+                  onFocus={(e) => { (e.currentTarget as HTMLElement).style.borderColor = '#fc8a37'; }}
+                  onBlur={(e) => { (e.currentTarget as HTMLElement).style.borderColor = '#2a2c2f'; }}
                 />
               </div>
             </div>
@@ -253,11 +295,11 @@ export default function Index() {
                 <button
                   key={c.id}
                   onClick={() => setCategory(c.id)}
-                  className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all border ${
-                    category === c.id
-                      ? 'bg-primary text-primary-foreground border-primary'
-                      : 'bg-secondary border-border text-muted-foreground hover:text-foreground hover:border-primary/40'
-                  }`}
+                  className="px-3 py-1.5 rounded-xl text-sm font-semibold transition-all"
+                  style={category === c.id
+                    ? { background: 'rgba(252,138,55,0.15)', color: '#fc8a37', border: '1px solid rgba(252,138,55,0.4)' }
+                    : { background: '#252729', color: '#7a7d82', border: '1px solid #2a2c2f' }
+                  }
                 >
                   {c.label}
                 </button>
@@ -266,24 +308,24 @@ export default function Index() {
 
             {/* Rarity filters */}
             <div className="flex flex-wrap gap-2 mb-5">
-              {(['all', 'common', 'uncommon', 'rare', 'epic', 'legendary', 'godlike'] as const).map((r) => (
-                <button
-                  key={r}
-                  onClick={() => setRarity(r)}
-                  className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all border ${
-                    rarity === r
-                      ? r === 'all'
-                        ? 'bg-primary text-primary-foreground border-primary'
-                        : `${rarityColors[r as keyof typeof rarityColors]?.bg} ${rarityColors[r as keyof typeof rarityColors]?.text} ${rarityColors[r as keyof typeof rarityColors]?.border}`
-                      : 'border-border text-muted-foreground hover:text-foreground hover:border-border/80'
-                  }`}
-                >
-                  {r === 'all' ? 'Все' : rarityColors[r as keyof typeof rarityColors]?.label}
-                </button>
-              ))}
+              {(['all', 'common', 'uncommon', 'rare', 'epic', 'legendary', 'godlike'] as const).map((r) => {
+                const color = r === 'all' ? '#fc8a37' : rarityBarBg[r];
+                return (
+                  <button
+                    key={r}
+                    onClick={() => setRarity(r)}
+                    className="px-2.5 py-1 rounded-lg text-xs font-bold transition-all"
+                    style={rarity === r
+                      ? { background: `${color}20`, color, border: `1px solid ${color}60` }
+                      : { background: '#252729', color: '#7a7d82', border: '1px solid #2a2c2f' }
+                    }
+                  >
+                    {rarityLabels[r]}
+                  </button>
+                );
+              })}
             </div>
 
-            <p className="text-muted-foreground text-xs mb-4">{filteredSkins.length} предметов</p>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
               {filteredSkins.map((s) => (
                 <SkinCard key={s.id} skin={s} />
@@ -294,27 +336,26 @@ export default function Index() {
 
         {/* ─── CRASH TAB ─── */}
         {tab === 'crash' && (
-          <div>
-            <div className="mb-6 text-center">
-              <h1 className="text-3xl font-black mb-1" style={{ fontFamily: 'Oswald, sans-serif' }}>
-                <span className="text-primary">CRASH</span> GAME
+          <div className="slide-up">
+            <div className="mb-5 text-center">
+              <h1 className="text-3xl font-extrabold text-white mb-1">
+                Краш <span style={{ color: '#fc8a37' }}>игра</span>
               </h1>
-              <p className="text-muted-foreground text-sm">Сделай ставку и успей забрать до краша!</p>
+              <p className="text-sm" style={{ color: '#7a7d82' }}>Сделай ставку и успей забрать до краша!</p>
             </div>
             <div className="max-w-2xl mx-auto">
               <CrashGame />
             </div>
-
-            <div className="max-w-2xl mx-auto mt-5 bg-card border border-border rounded-xl p-4">
-              <h3 className="font-bold mb-3 flex items-center gap-2 text-sm">
-                <Icon name="Info" size={15} className="text-primary" />
+            <div className="max-w-2xl mx-auto mt-4 p-4 rounded-2xl" style={{ background: '#1c1d1f', border: '1px solid #2a2c2f' }}>
+              <h3 className="font-bold mb-3 flex items-center gap-2 text-sm text-white">
+                <Icon name="Info" size={15} style={{ color: '#fc8a37' }} />
                 Как играть
               </h3>
-              <ol className="space-y-1.5 text-sm text-muted-foreground">
-                <li><span className="text-foreground font-semibold">1.</span> Сделай ставку во время обратного отсчёта</li>
-                <li><span className="text-foreground font-semibold">2.</span> Множитель начинает расти после старта</li>
-                <li><span className="text-foreground font-semibold">3.</span> Нажми "Забрать" до того как ракета улетит!</li>
-                <li><span className="text-red-400 font-semibold">⚠</span> Если не успел — теряешь ставку</li>
+              <ol className="space-y-1.5 text-sm" style={{ color: '#7a7d82' }}>
+                <li><span className="text-white font-semibold">1.</span> Сделай ставку во время обратного отсчёта</li>
+                <li><span className="text-white font-semibold">2.</span> Множитель начинает расти после старта</li>
+                <li><span className="text-white font-semibold">3.</span> Нажми "Забрать" до того как ракета улетит!</li>
+                <li><span className="font-semibold" style={{ color: '#ff3f5b' }}>⚠</span> Если не успел — теряешь ставку</li>
               </ol>
             </div>
           </div>
@@ -322,13 +363,13 @@ export default function Index() {
 
         {/* ─── INVENTORY TAB ─── */}
         {tab === 'inventory' && (
-          <div>
+          <div className="slide-up">
             <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
               <div>
-                <h1 className="text-2xl font-black" style={{ fontFamily: 'Oswald, sans-serif' }}>Инвентарь</h1>
-                <p className="text-muted-foreground text-sm mt-0.5">
+                <h1 className="text-2xl font-extrabold text-white">Инвентарь</h1>
+                <p className="text-sm mt-0.5" style={{ color: '#7a7d82' }}>
                   {inventory.length} предметов · Стоимость:{' '}
-                  <span className="text-primary font-bold">
+                  <span className="font-bold" style={{ color: '#fc8a37' }}>
                     {inventory.reduce((s, i) => s + Math.floor(i.skin.price * 0.7), 0).toLocaleString()} ₽
                   </span>
                 </p>
@@ -339,7 +380,10 @@ export default function Index() {
                     const total = sellAll();
                     toast({ title: `Продано всё за ${total.toLocaleString()} ₽`, description: 'Средства зачислены на баланс' });
                   }}
-                  className="flex items-center gap-2 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-400 font-semibold px-4 py-2 rounded-lg text-sm transition-all"
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all"
+                  style={{ background: 'rgba(255,63,91,0.1)', border: '1px solid rgba(255,63,91,0.25)', color: '#ff3f5b' }}
+                  onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,63,91,0.18)'; }}
+                  onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,63,91,0.1)'; }}
                 >
                   <Icon name="Trash2" size={15} />
                   Продать всё
@@ -349,14 +393,15 @@ export default function Index() {
 
             {inventory.length === 0 ? (
               <div className="text-center py-20">
-                <div className="w-16 h-16 bg-secondary rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Icon name="Archive" size={28} className="text-muted-foreground" />
+                <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4" style={{ background: '#252729' }}>
+                  <Icon name="Archive" size={28} style={{ color: '#7a7d82' }} />
                 </div>
-                <h3 className="text-lg font-bold mb-2">Инвентарь пуст</h3>
-                <p className="text-muted-foreground text-sm mb-5">Открывайте кейсы или покупайте скины в каталоге</p>
+                <h3 className="text-lg font-bold text-white mb-2">Инвентарь пуст</h3>
+                <p className="text-sm mb-5" style={{ color: '#7a7d82' }}>Открывайте кейсы или покупайте скины в маркете</p>
                 <button
                   onClick={() => setTab('cases')}
-                  className="bg-primary text-primary-foreground font-bold px-6 py-2.5 rounded-lg text-sm"
+                  className="px-6 py-2.5 rounded-xl text-sm font-bold text-white"
+                  style={{ background: 'linear-gradient(135deg, #fc8a37 0%, #e8620e 100%)' }}
                 >
                   Открыть кейсы
                 </button>
@@ -365,28 +410,36 @@ export default function Index() {
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
                 {inventory.map((item, i) => {
                   const sellPrice = Math.floor(item.skin.price * 0.7);
-                  const colors = rarityColors[item.skin.rarity];
+                  const barColor = rarityBarBg[item.skin.rarity] || '#9e9e9e';
                   return (
-                    <div key={i} className={`skin-card bg-card border-2 rarity-${item.skin.rarity} rounded-xl overflow-hidden group transition-all duration-300`}>
-                      <div className={`relative h-36 ${colors.bg} flex items-center justify-center p-2`}>
+                    <div
+                      key={i}
+                      className="skin-card group relative rounded-xl overflow-hidden transition-all duration-200"
+                      style={{ background: '#1c1d1f', border: `1px solid #2a2c2f` }}
+                      onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = `${barColor}50`; }}
+                      onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = '#2a2c2f'; }}
+                    >
+                      {/* Rarity top line */}
+                      <div className="h-0.5 w-full" style={{ background: barColor }} />
+                      <div className="relative h-36 flex items-center justify-center p-3" style={{ background: `${barColor}0d` }}>
                         <img
                           src={item.skin.image}
                           alt={item.skin.name}
                           className="h-full w-full object-cover rounded-lg opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300"
                         />
-                        <span className={`absolute top-2 right-2 text-[10px] font-bold px-1.5 py-0.5 rounded-full ${colors.bg} ${colors.text} border ${colors.border}`}>
-                          {colors.label}
-                        </span>
                       </div>
                       <div className="p-2.5">
-                        <div className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">{item.skin.weapon}</div>
-                        <div className="font-bold text-sm mt-0.5 leading-tight">{item.skin.name}</div>
+                        <div className="text-[10px] font-medium uppercase tracking-wider mb-0.5" style={{ color: '#7a7d82' }}>{item.skin.weapon}</div>
+                        <div className="font-bold text-sm leading-tight text-white">{item.skin.name}</div>
                         <button
                           onClick={() => {
                             const price = sellFromInventory(i);
                             toast({ title: `Продано за ${price.toLocaleString()} ₽`, description: `${item.skin.weapon} | ${item.skin.name}` });
                           }}
-                          className="mt-2 w-full flex items-center justify-center gap-1.5 bg-primary/10 hover:bg-primary/20 border border-primary/30 text-primary font-bold text-xs py-1.5 rounded-lg transition-all"
+                          className="mt-2 w-full flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-xs font-bold transition-all"
+                          style={{ background: 'rgba(252,138,55,0.1)', border: '1px solid rgba(252,138,55,0.25)', color: '#fc8a37' }}
+                          onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = 'rgba(252,138,55,0.2)'; }}
+                          onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = 'rgba(252,138,55,0.1)'; }}
                         >
                           <Icon name="DollarSign" size={12} />
                           {sellPrice.toLocaleString()} ₽
@@ -401,9 +454,9 @@ export default function Index() {
         )}
       </main>
 
-      {/* Footer line */}
-      <div className="border-t border-border/40 mt-10 py-4 text-center text-xs text-muted-foreground">
-        © 2025 DragonDrop · Только для развлечения
+      {/* Footer */}
+      <div className="mt-12 py-5 text-center text-xs" style={{ borderTop: '1px solid #2a2c2f', color: '#4a4d52' }}>
+        © 2025 DragonDrop · Только для развлечения · 18+
       </div>
 
       {/* Modals */}
